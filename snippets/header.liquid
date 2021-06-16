@@ -1,0 +1,120 @@
+<header class="header" id="header">
+  <div class="header-inner flex space-between">
+
+    {% unless template == "product" %}
+    <button class="menu-button" @click="toggleMenu">
+      <svg class="menu-arrow-icon">{% render 'header-arrow' %}</svg>
+      <span>Menu</span>
+    </button>
+    {% else %}
+    <a href="javascript:history.back()" class="menu-button">
+      <svg class="menu-arrow-icon" style="transform: none;">{% render 'header-arrow' %}</svg>
+      <span>Back</span>
+    </a>
+    {% endunless %}
+
+    <a href="/" class="header-title">{{ shop.name }}</a>
+
+    <div class="cart-button-container" @click="toggleMiniCart">
+      <button class="cart-button">
+        <span>
+          <template v-if="cart">
+            Cart (${cart.item_count})
+          </template>
+        </span>
+        <svg class="cart-arrow-icon">{% render 'header-arrow' %}</svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-mobile">
+    <a href="/" class="header-title">{{ shop.name }}</a>
+    <div class="mobile-nav">
+      <button class="mobile-nav-button" @click="toggleMenu">
+        <span>Menu</span>
+      </button>
+      <button class="mobile-nav-button" @click="toggleMiniCart">
+        <span>Cart</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="menu-drawer" :class="{ hidden: menuDrawer }">
+    {% render 'menu-drawer' %}
+  </div>
+
+  <div class="mini-cart" :class="{ hidden: miniCart }">
+    <button class="mini-cart-close-button" @click="toggleMiniCart">Close</button>
+    {% render 'mini-cart' %}
+  </div>
+  <div class="outside" v-if="!miniCart || !menuDrawer" @click="closeAllDrawers"></div>
+</header>
+
+<script>
+
+  if (document.querySelector('#header')) {
+
+    const headerCart = Vue.createApp({
+      delimiters: ['${', '}'],
+      data() {
+        return {
+          cartData: store.state.cartState
+        }
+      },
+      methods: {
+        toggleMiniCart() {
+          toggleMiniCart.openCart()
+        },
+        toggleMenu() {
+          toggleMenu.openMenu()
+        },
+        closeAllDrawers() {
+          toggleClose.closeAll()
+        },
+        decrement(item) {
+          const data = {
+            "id": item.key,
+            "quantity": item.quantity - 1
+          }
+
+          axios.post('/cart/change.js', data)
+            .then(response => {
+              store.getCart()
+            })
+            .catch(error => console.log(error))
+        },
+        increment(item) {
+          const data = {
+            "id": item.key,
+            "quantity": item.quantity + 1
+          }
+
+          axios.post('/cart/change.js', data)
+            .then(response => {
+              store.getCart()
+            })
+            .catch(error => console.log(error))
+        },
+        money(value) {
+          if (!value) return 0
+          return "$" + (value/100).toFixed(2)
+        }
+      },
+      computed: {
+        miniCart() {
+          return miniCartState.hidden
+        },
+        menuDrawer() {
+          return menuState.hidden
+        },
+        cart() {
+          return this.cartData[0]
+        }
+      },
+      created() {
+        store.getCart()
+      }
+    }).mount('#header')
+  }
+
+</script>

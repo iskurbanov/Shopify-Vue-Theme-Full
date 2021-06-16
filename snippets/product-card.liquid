@@ -1,0 +1,50 @@
+<div class="product-card">
+  <a href="{{ product.url | within: collection }}" class="product-image-wrapper">
+    <div class="swiper-container swiper-container-{{- product.id -}}">
+      <div class="swiper-wrapper">
+        {% for image in product.images %}
+          <div class="swiper-slide">
+            <img src="{{ image.src | img_url: 'large' }}" alt="{{ image.alt | escape }}" />
+            <div class="swiper-button-next swiper-button-next-{{- product.id -}}"></div>
+            <div class="swiper-button-prev swiper-button-prev-{{- product.id -}}"></div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </a>
+
+  <a href="{{ product.url | within: collection }}">
+    <div class="product-card-title">
+      <h3>{{ product.title | upcase }}</h3>
+      <p class="product-card-price">{{ product.price | money }}</p>
+      <p class="product-card-sizes">
+        {% for size_option in product.options_by_name['Size'].values %}
+          {{ size_option }}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      </p>
+      <div class="add-button">
+        <div class="plus"></div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<script>
+  new Swiper(".swiper-container-{{- product.id -}}", {
+    slidesPerView: 1,
+    centeredSlides: true,
+    spaceBetween: 0,
+    loop: true,
+
+    breakpoints: {
+      600: {
+        allowTouchMove: false,
+        speed: 0,
+        navigation: {
+          nextEl: ".swiper-button-next-{{- product.id -}}",
+          prevEl: ".swiper-button-prev-{{- product.id -}}"
+        }
+      }
+    }
+  })
+</script>

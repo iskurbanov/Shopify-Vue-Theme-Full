@@ -1,0 +1,73 @@
+<form id="add-to-cart-form">
+
+  <template v-for="(option, i) in form.options" :key="i">
+    <div>
+      {% render 'product-option-row' %}
+    </div>
+  </template>
+
+  <button @click="addToCart" type="submit" name="add" class="add-to-cart-button">Add to cart</button>
+</form>
+
+<script>
+  if (document.querySelector('#add-to-cart-form')) {
+
+    const productForm = Vue.createApp({
+      delimiters: ['${', '}'],
+      data() {
+        return {
+          open: false,
+          variants: "",
+          selected: [],
+          form: {
+            selections: "",
+            options: ""
+          }
+        }
+      },
+      created() {
+        axios.get("/products/{{ product.handle }}.js")
+          .then(results => {
+            console.log(results)
+            this.form.options = results.data.options.map(item => ({...item, visible: false}))
+            this.variants = results.data.variants
+            results.data.options.map(item => this.selected.push(item.values[0]))
+            this.form.selections = [
+              this.selected[0] ? this.selected[0] : null,
+              this.selected[1] ? this.selected[1] : null,
+              this.selected[2] ? this.selected[2] : null
+            ]
+          })
+      },
+      methods: {
+        addToCart(event) {
+          event.preventDefault()
+
+          let selectedVariant
+
+          this.variants.forEach((variant, i) => {
+            if (variant.option1 === this.form.selections[0] && variant.option2 === this.form.selections[1] && variant.option3 === this.form.selections[2]) {
+              selectedVariant = variant
+            }
+          })
+
+          let data = {
+            id: selectedVariant.id,
+            quantity: 1
+          }
+
+          axios.post('/cart/add.js', data)
+            .then((response) => {
+              store.getCart()
+            })
+            .then(() => {
+              toggleMiniCart.openCart()
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        }
+      }
+    }).mount('#add-to-cart-form')
+  }
+</script>
