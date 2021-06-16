@@ -1,0 +1,35 @@
+<div class="cart-form">
+  <template v-if="cart && cart.items.length > 0">
+    <div class="mini-cart-rows">
+      <div class="mini-cart-item" v-for="item in cart.items">
+        <div class="mini-cart-image-wrapper" v-if="item.image">
+          <a :href="item.url">
+            <img :src="item.image" :alt="item.title" />
+          </a>
+        </div>
+        <div class="mini-cart-item-right">
+          <div>
+            <a :href="item.url">${ item.title }</a>
+          </div>
+          <div>${ money(item.price) }</div>
+          <div class="mini-cart-quantity">
+            <input type="text" v-model="item.quantity" />
+            <button class="mini-cart-quantity-button" @click="decrement(item)">-</button>
+            <button class="mini-cart-quantity-button" @click="increment(item)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="checkout-subtotal">
+        <p>Subtotal: </p>
+        <p>${ money(cart.total_price) }</p>
+      </div>
+      <a href="/checkout" class="checkout-button">Checkout</a>
+    </div>
+  </template>
+
+  <template v-else>
+    <p class="cart-empty">The cart is empty</p>
+  </template>
+</div>

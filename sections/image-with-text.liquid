@@ -1,0 +1,44 @@
+<div class="image-with-text section {% if section.settings.reverse %}reverse{% endif %}">
+  <img src="{{ section.settings.image | img_url: 'master' }}" alt="{{ section.settings.title }}">
+  <div class="image-with-text-description-container">
+    <h2 class="heading">{{ section.settings.title }}</h2>
+    <div class="image-with-text-body">{{ section.settings.text }}</div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with Text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Image with Text"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Description",
+      "default": "<p>Write your description here</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Reverse Image Position",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with Text",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

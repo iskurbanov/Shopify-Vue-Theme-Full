@@ -1,0 +1,67 @@
+<footer class="footer">
+  <div class="footer-inner flex space-between">
+    <div class="footer-left half">
+      {{ section.settings.title }}
+    </div>
+    <div class="footer-right flex space-between half">
+      <div class="footer-menu flex column half">
+        <ul class="secondary-menu">
+          {% for link in linklists.footer2.links %}
+          <li>
+            {% assign child_list_handle = link.title | handleize %}
+            {% if linklists[child_list_handle].links != blank %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+              [{% for childlink in linklists[child_list_handle].links %}
+                <a href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+              {% endfor %}]
+            {% else %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="footer-menu footer-social flex column half">
+        <ul>
+          {% for block in section.blocks %}
+            <li>
+              <a href="{{ block.settings.link }}">{{ block.settings.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Footer Description",
+      "default": "Footer Description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_link",
+      "name": "Social",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Social title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Social link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

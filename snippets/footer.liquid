@@ -1,0 +1,42 @@
+<footer class="footer">
+  <div class="footer-inner flex space-between">
+    <div class="footer-left half">
+      Build a Shopify theme from scratch!
+    </div>
+    <div class="footer-right flex space-between half">
+      <div class="footer-menu flex column half">
+        <ul class="secondary-menu">
+          {% for link in linklists.footer2.links %}
+          <li>
+            {% assign child_list_handle = link.title | handleize %}
+            {% if linklists[child_list_handle].links != blank %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+              [{% for childlink in linklists[child_list_handle].links %}
+                <a href="{{ childlink.url }}">{{ childlink.title | escape }}</a>
+              {% endfor %}]
+            {% else %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+      <div class="footer-menu footer-social flex column half">
+        <ul>
+          <li>
+            <a href="www.facebook.com">Facebook</a>
+          </li>
+          <li>
+            <a href="www.facebook.com">Facebook</a>
+          </li>
+          <li>
+            <a href="www.facebook.com">Facebook</a>
+          </li>
+          <li>
+            <a href="www.facebook.com">Facebook</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
