@@ -1,4 +1,4 @@
-# Shopify-Vue-Theme-Full
+# Shopify Vue Theme from scratch
 
 Full project at: www.buildvuetheme.com
 
