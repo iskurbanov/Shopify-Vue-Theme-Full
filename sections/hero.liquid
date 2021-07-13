@@ -1,5 +1,5 @@
 <div class="hero-image section">
-  <img src="{{ section.settings.image | img_url: 'master' }}">
+  <img src="{{ section.settings.image | img_url: 'master' }}" alt="{{ section.settings.alt }}">
 </div>
 
 {% schema %}
@@ -10,6 +10,12 @@
       "type": "image_picker",
       "id": "image",
       "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Alt Text",
+      "default": "Hero Image"
     }
   ],
   "presets": [

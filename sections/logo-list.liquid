@@ -4,7 +4,7 @@
   <div class="logo-container">
     {% for block in section.blocks %}
       <a class="logo-link" href="{{ block.settings.link }}">
-        <img src="{{ block.settings.image | img_url: 'master' }}" >
+        <img src="{{ block.settings.image | img_url: 'large' }}" alt="{{ block.settings.alt }}">
       </a>
     {% endfor %}
   </div>
@@ -31,6 +31,12 @@
           "type": "image_picker",
           "id": "image",
           "label": "Logo image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt Text",
+          "default": "Logo Alt Text"
         },
         {
           "type": "url",

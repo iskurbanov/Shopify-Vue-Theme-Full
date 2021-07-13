@@ -4,7 +4,7 @@
       <div class="swiper-wrapper">
         {% for image in product.images %}
           <div class="swiper-slide">
-            <img src="{{ image.src | img_url: 'master' }}" alt="{{ image.alt | escape }}" />
+            <img id="{{ image.alt | handleize }}" src="{{ image.src | img_url: 'master' }}" alt="{{ image.alt | escape }}" />
             <div class="swiper-button-next swiper-button-next-{{- product.id -}}"></div>
             <div class="swiper-button-prev swiper-button-prev-{{- product.id -}}"></div>
           </div>
@@ -27,8 +27,9 @@
   </div>
 </div>
 
+
 <script>
-  new Swiper(".swiper-container-{{- product.id -}}", {
+  var swiper = new Swiper(".swiper-container-{{- product.id -}}", {
     slidesPerView: 1,
     centeredSlides: true,
     spaceBetween: 0,
@@ -45,4 +46,96 @@
       }
     }
   })
+
+
+  if (document.querySelector("#add-to-cart-form")) {
+    const productForm = Vue.createApp({
+      delimiters: ["${", "}"],
+      data() {
+        return {
+          open: false,
+          variants: "",
+          selected: [],
+          selectedImage: "",
+          form: {
+            selections: "",
+            options: "",
+          },
+        };
+      },
+      created() {
+        axios.get("/products/{{ product.handle }}.js").then((results) => {
+          this.form.options = results.data.options.map((item) => ({
+            ...item,
+            visible: false,
+          }));
+          this.variants = results.data.variants;
+          results.data.options.map((item) =>
+            this.selected.push(item.values[0])
+          );
+          this.form.selections = [
+            this.selected[0] ? this.selected[0] : null,
+            this.selected[1] ? this.selected[1] : null,
+            this.selected[2] ? this.selected[2] : null,
+          ];
+        });
+      },
+      methods: {
+        addToCart(event) {
+          event.preventDefault();
+
+          let selectedVariant;
+
+          this.variants.forEach((variant, i) => {
+            if (
+              variant.option1 === this.form.selections[0] &&
+              variant.option2 === this.form.selections[1] &&
+              variant.option3 === this.form.selections[2]
+            ) {
+              selectedVariant = variant;
+            }
+          });
+
+          let data = {
+            id: selectedVariant.id,
+            quantity: 1,
+          };
+
+          axios
+            .post("/cart/add.js", data)
+            .then((response) => {
+              store.getCart();
+            })
+            .then(() => {
+              toggleMiniCart.openCart();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        selection(value) {
+            let selectedVariant;
+
+            this.variants.forEach((variant, i) => {
+              if (
+                variant.option1 === this.form.selections[0] &&
+                variant.option2 === this.form.selections[1] &&
+                variant.option3 === this.form.selections[2]
+              ) {
+                selectedVariant = variant;
+              }
+          });
+
+          console.log(selectedVariant.featured_image.position)
+          
+          swiper.slideTo(selectedVariant.featured_image.position)
+        }
+      },
+      computed: {
+        image() {
+          return this.selectedImage
+        }
+      }
+    }).mount("#add-to-cart-form");
+  }
 </script>
